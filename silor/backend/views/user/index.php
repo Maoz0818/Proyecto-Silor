@@ -30,6 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'data-pjax' => '0',
         ]); ?>  
 
+        <?= Html::a( Icon::show('upload').'Cargar archivo de usuarios', '#', [
+            'id' => 'activity-index-link',
+            'class' => 'btn btn-success',
+            'data-toggle' => 'modal',
+            'data-target' => '#modal',
+            'data-url' => Url::to(['upload']),
+            'data-pjax' => '0',
+        ]); ?>  
     </p>      
 
 <?php Pjax::begin(); ?>    

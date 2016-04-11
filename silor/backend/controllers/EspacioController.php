@@ -102,6 +102,8 @@ class EspacioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo espacio.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -130,10 +132,8 @@ class EspacioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return [
-                'message' => Icon::show('check', ['class' => 'fa-2x']).'Nuevo espacio creado con exito',
-                ];
+                Yii::$app->session->setFlash('success', Icon::show('check').'Espacio actualizado.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -154,7 +154,7 @@ class EspacioController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', Icon::show('check').'Usuario eliminado.');
         return $this->redirect(['index']);
     }
 

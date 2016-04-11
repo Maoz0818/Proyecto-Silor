@@ -105,10 +105,8 @@ class CategoriaController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return [
-                'message' => Icon::show('check', ['class' => 'fa-2x']).'Nueva categoria creada con exito',
-                ];
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado una nueva categoria.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -137,7 +135,8 @@ class CategoriaController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Categoria actualizada.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -160,6 +159,7 @@ class CategoriaController extends Controller
         $model= $this->findModel($id);
         try {
              $model->delete();
+             Yii::$app->session->setFlash('success', Icon::show('check').'Categoria eliminada.');
         } catch(IntegrityException $e) {
             Yii::$app->session->setFlash('error', 'No es posible eliminar la categoria porque tiene una relacion con un equipo existente.');
         }

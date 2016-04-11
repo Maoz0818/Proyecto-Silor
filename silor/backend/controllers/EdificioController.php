@@ -102,7 +102,8 @@ class EdificioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo edificio.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -131,7 +132,8 @@ class EdificioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Edificio actualizado.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -154,12 +156,11 @@ class EdificioController extends Controller
         $model= $this->findModel($id);
         try {
              $model->delete();
+             Yii::$app->session->setFlash('success', Icon::show('check').'Edificio eliminado.');
         } catch(IntegrityException $e) {
             Yii::$app->session->setFlash('error', 'No es posible eliminar el edificio porque tiene una relacion con un espacio existente.');
         }
-
         return $this->redirect(['index']);
-
     }
 
     /**

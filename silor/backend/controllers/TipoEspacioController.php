@@ -102,10 +102,8 @@ class TipoEspacioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return [
-                'message' => Icon::show('check', ['class' => 'fa-2x']).'Nuevo tipo de espacio creado con exito',
-                ];
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo tipo de espacio.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -134,7 +132,8 @@ class TipoEspacioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Tipo de espacio actualizado.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -157,6 +156,7 @@ class TipoEspacioController extends Controller
         $model= $this->findModel($id);
         try {
              $model->delete();
+             Yii::$app->session->setFlash('success', Icon::show('check').'Tipo de espacio eliminado.');
         } catch(IntegrityException $e) {
             Yii::$app->session->setFlash('error', 'No es posible eliminar el tipo de espacio porque tiene una relacion con un espacio existente.');
         }

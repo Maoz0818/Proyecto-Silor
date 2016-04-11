@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="user-upload">
 
-   <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data']]) ?>
+   <?php $form = ActiveForm::begin(['options'=>['enctype'=>'multipart/form-data'],'id' => 'user-upload',]) ?>
 
       <h1><?= Html::encode($this->title) ?></h1>
 
@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
       ?>
 
     <?php ActiveForm::end() ?>
+
 </div>
 
  

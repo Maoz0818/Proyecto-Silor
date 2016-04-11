@@ -106,10 +106,8 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return [
-                'message' => Icon::show('check', ['class' => 'fa-2x']).'Nuevo usuario creado con exito',
-                ];
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo usuario.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -138,7 +136,8 @@ class UserController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Usuario actualizado.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -159,7 +158,7 @@ class UserController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', Icon::show('check').'Usuario eliminado.');
         return $this->redirect(['index']);
     }
 
@@ -192,23 +191,24 @@ class UserController extends Controller
              if($model->upload()){
 
                 if($objUpload->uploadFileBD('uploads/'.$model->excelFile->name)){                   
-                   //return $this->goHome();                   
-                    Yii::$app->session->setFlash('success', 'Archivo cargado con exito, usuarios registrados.');
+                                       
+                    Yii::$app->session->setFlash('success','Archivo cargado con exito, usuarios registrados.');
+                    return $this->redirect(['index']);
 
                 }else{
 
                     Yii::$app->session->setFlash('error', 'El archivo no tiene el formato deseado.');
-                     //return $this->render('error',['message'=>'El archivo no tiene el formato deseado','name'=>'Error al guardar']);
+                    return $this->redirect(['index']);
                 }
 
              }else{
 
                 Yii::$app->session->setFlash('error', 'El archivo no pudo ser cargado porque ya existe un archivo con el mismo nombre.');
-                //return $this->render('error',['message'=>'El archivo no pudo ser cargado','name'=>'Error al subir']);
+                return $this->redirect(['index']);
              }
                 
         }
-        return $this->render('upload',['model'=>$model]);         
+        return $this->renderAjax('upload',['model'=>$model]);         
     }
 
 }

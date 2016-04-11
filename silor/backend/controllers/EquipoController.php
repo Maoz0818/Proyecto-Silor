@@ -102,10 +102,8 @@ class EquipoController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                return [
-                'message' => Icon::show('check', ['class' => 'fa-2x']).'Nuevo equipo creado con exito',
-                ];
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo equipo.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -134,7 +132,8 @@ class EquipoController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                $model->refresh();
+                Yii::$app->session->setFlash('success', Icon::show('check').'Equipo actualizado.');
+                return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 return ActiveForm::validate($model);
@@ -155,7 +154,7 @@ class EquipoController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', Icon::show('check').'Equipo eliminado.');
         return $this->redirect(['index']);
     }
 
