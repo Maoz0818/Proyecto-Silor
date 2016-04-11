@@ -12,6 +12,9 @@ use common\models\PermissionHelpers;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use kartik\icons\Icon;
+use yii\web\UploadedFile;
+use backend\models\UploadForm;
+use backend\models\Upload;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -27,10 +30,10 @@ class UserController extends Controller
         return [
         'access' => [
         'class' => \yii\filters\AccessControl::className(),
-        'only' => ['index', 'view','create', 'update', 'delete'],
+        'only' => ['index', 'view','create', 'update', 'delete', 'upload'],
         'rules' => [
         [
-        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+        'actions' => ['index', 'view', 'create', 'update', 'delete', 'upload'],
         'allow' => true,
         'roles' => ['@'],
         'matchCallback' => function ($rule, $action) {
@@ -175,4 +178,37 @@ class UserController extends Controller
             throw new NotFoundHttpException('La página solicitada no existe.');
         }
     }
+
+    public function actionUpload(){
+
+        $model = new UploadForm();
+
+        $objUpload = new Upload();
+
+        if(Yii::$app->request->isPost){
+
+             $model->excelFile = UploadedFile::getInstance($model,'excelFile');
+
+             if($model->upload()){
+
+                if($objUpload->uploadFileBD('uploads/'.$model->excelFile->name)){                   
+                   //return $this->goHome();                   
+                    Yii::$app->session->setFlash('success', 'Archivo cargado con exito, usuarios registrados.');
+
+                }else{
+
+                    Yii::$app->session->setFlash('error', 'El archivo no tiene el formato deseado.');
+                     //return $this->render('error',['message'=>'El archivo no tiene el formato deseado','name'=>'Error al guardar']);
+                }
+
+             }else{
+
+                Yii::$app->session->setFlash('error', 'El archivo no pudo ser cargado porque ya existe un archivo con el mismo nombre.');
+                //return $this->render('error',['message'=>'El archivo no pudo ser cargado','name'=>'Error al subir']);
+             }
+                
+        }
+        return $this->render('upload',['model'=>$model]);         
+    }
+
 }

@@ -73,7 +73,7 @@ Icon::map($this);
         $menuItems []=['label' => Icon::show('users').'Usuarios',
             'items' => [
                 ['label' => 'Gestión de Usuarios', 'url' => ['/user/index']],  
-                ['label' => 'Cargar Archivo','url'=>['/site/upload']], 
+                ['label' => 'Cargar Archivo','url'=>['/user/upload']], 
             ],
         ];
     }

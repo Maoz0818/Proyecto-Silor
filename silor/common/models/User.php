@@ -82,6 +82,7 @@ class User extends ActiveRecord implements IdentityInterface
                 ['cedula', 'filter', 'filter' => 'trim'],
                 ['cedula', 'required'],
                 ['cedula', 'string', 'max' => 35],
+                ['cedula', 'unique'],
 
                 ['telefono', 'filter', 'filter' => 'trim'],
                 ['telefono', 'required'],
