@@ -19,8 +19,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'role_id', 'status_id', 'telefono'], 'integer'],
-            [['nombre_completo', 'cedula', 'email', 'created_at', 'updated_at', 'roleName', 'statusName'], 'safe'],
+            [['id', 'status_id', 'telefono'], 'integer'],
+            [['nombre_completo', 'cedula', 'email', 'created_at', 'updated_at', 'roleName', 'statusName', 'role_id'], 'safe'],
         ];
     }
 
@@ -52,10 +52,11 @@ return $dataProvider;
 
 }
 
+$query->joinWith('role');
+
 $query->andFilterWhere([
 
 'id' => $this->id,
-'role_id' => $this->role_id,
 'status_id' => $this->status_id,
 'created_at' => $this->created_at,
 'updated_at' => $this->updated_at,
@@ -68,7 +69,9 @@ $query->andFilterWhere(['like', 'nombre_completo', $this->nombre_completo])
 ->andFilterWhere(['like', 'password_hash', $this->password_hash])
 ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
 
-->andFilterWhere(['like', 'email', $this->email]);
+->andFilterWhere(['like', 'email', $this->email])
+
+->andFilterWhere(['like', 'role.role_name', $this->role_id]);
 
 return $dataProvider;
 

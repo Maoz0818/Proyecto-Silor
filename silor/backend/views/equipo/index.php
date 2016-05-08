@@ -83,13 +83,13 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
 
     <?php
-    Modal::begin([
-        'id' => 'modal',
-        ]);
+        Modal::begin([
+            'id' => 'modal',
+            ]);
 
-    echo "<div></div>";
+        echo "<div></div>";
 
-    Modal::end();
+        Modal::end();
     ?>
 
 </div>

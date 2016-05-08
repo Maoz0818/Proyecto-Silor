@@ -13,9 +13,11 @@ use common\models\ValueHelpers;
 use kartik\icons\Icon;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use conquer\momentjs\MomentjsAsset;
 
 AppAsset::register($this);
 Icon::map($this);
+MomentjsAsset::register($this);
 
 ?>
 <?php $this->beginPage() ?>
@@ -39,10 +41,10 @@ Icon::map($this);
     $is_superUser = ValueHelpers::getRoleValue('SuperUsuario');
 
     NavBar::begin([
-            'brandLabel' => '<img src="images/univalle.png" class="pull-left"/> &nbsp Universidad del Valle',
+            'brandLabel' => '<img src="/images/univalle.png" class="pull-left"/> &nbsp Universidad del Valle',
             'brandUrl' => Yii::$app->homeUrl,
             'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',],
+            'class' => 'navbar-collapse navbar-fixed-top',],
     ]); 
     
 
@@ -56,24 +58,22 @@ Icon::map($this);
 
         $menuItems []=['label' => Icon::show('building-o').'Espacios',
             'items' => [
+                ['label' => 'Gestión de Espacios', 'url' => ['/espacio/index']],
                 ['label' => 'Tipos de Espacio', 'url' => ['/tipo-espacio/index']],
                 ['label' => 'Edificios', 'url' => ['/edificio/index']],
-                ['label' => 'Espacios', 'url' => ['/espacio/index']],  
-
             ],
         ];
 
         $menuItems []=['label' => Icon::show('laptop').'Equipos',
             'items' => [
+                ['label' => 'Gestión de Equipos', 'url' => ['/equipo/index']],
                 ['label' => 'Categorias', 'url' => ['/categoria/index']],  
-                ['label' => 'Equipos', 'url' => ['/equipo/index']],
             ],
         ];
 
         $menuItems []=['label' => Icon::show('users').'Usuarios',
             'items' => [
                 ['label' => 'Gestión de Usuarios', 'url' => ['/user/index']],  
-                ['label' => 'Cargar Archivos','url'=>['/user/upload']], 
             ],
         ];
     }
@@ -81,7 +81,11 @@ Icon::map($this);
     if (!Yii::$app->user->isGuest
     && Yii::$app->user->identity->role_id == $is_superUser) {
 
-        $menuItems[] = ['label' => 'Usuarios', 'url' => ['/user/index']];  
+        $menuItems []=['label' => Icon::show('users').'Usuarios',
+            'items' => [
+                ['label' => 'Gestión de Usuarios', 'url' => ['/user/index']],  
+            ],
+        ];  
     }
 
     if (Yii::$app->user->isGuest) {
@@ -92,7 +96,7 @@ Icon::map($this);
 
     } else {
 
-        $menuItems [] = ['label' => Icon::show('sign-out').Yii::$app->user->identity->nombre_completo,
+        $menuItems [] = ['label' => '<img src="/images/user.png"/> &nbsp'.Yii::$app->user->identity->nombre_completo,
             'items' => [
                 ['label' => Icon::show('times').'Cerrar sesión','url' => ['/site/logout']], 
             ],
@@ -111,7 +115,7 @@ Icon::map($this);
 
     ?>
 
-    <div class="container">
+    <div class="container" id="main-content">
         <?= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) ?>

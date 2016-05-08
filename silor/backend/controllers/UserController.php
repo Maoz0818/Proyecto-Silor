@@ -103,10 +103,10 @@ class UserController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
-
+        
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo usuario.');
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se ha creado un nuevo usuario.');
                 return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -192,7 +192,7 @@ class UserController extends Controller
 
                 if($objUpload->uploadFileBD('uploads/'.$model->excelFile->name)){                   
                                        
-                    Yii::$app->session->setFlash('success','Archivo cargado con exito, usuarios registrados.');
+                    Yii::$app->session->setFlash('success',Icon::show('check').'Archivo cargado con exito, usuarios registrados.');
                     return $this->redirect(['index']);
 
                 }else{

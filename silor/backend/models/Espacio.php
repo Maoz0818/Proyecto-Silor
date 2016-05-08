@@ -54,7 +54,7 @@ class Espacio extends \yii\db\ActiveRecord
         return [
             'tipo_espacio_id' => 'Tipo de Espacio',
             'codigo' => 'Codigo',
-            'espacio_id' => 'Espacio ID',
+            'espacio_id' => 'ID',
             'capacidad' => 'Capacidad de personas',
             'ubicacion' => 'Ubicacion',
             'edificio_id' => 'Edificio',
@@ -87,7 +87,7 @@ class Espacio extends \yii\db\ActiveRecord
 
     public function getNombreEdificio()
     {
-        return $this->edificio ? $this->edificio->nombre_edificio : '- no role -';
+        return $this->edificio ? $this->edificio->nombre_edificio : '- sin edificio -';
     }
 
     /**
@@ -98,7 +98,7 @@ class Espacio extends \yii\db\ActiveRecord
         return $this->hasOne(TipoEspacio::className(), ['tipo_espacio_id' => 'tipo_espacio_id']);
     }
 
-                /**
+    /**
     * get list of tipoEspacio for dropdown
     */
     public static function getTipoEspacioList()
@@ -114,7 +114,7 @@ class Espacio extends \yii\db\ActiveRecord
 
     public function getNombreTipoEspacio()
     {
-        return $this->tipoEspacio ? $this->tipoEspacio->nombre_tipo : '- no role -';
+        return $this->tipoEspacio ? $this->tipoEspacio->nombre_tipo : '- sin tipo -';
     }
 
     public function getId()

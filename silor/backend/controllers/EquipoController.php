@@ -102,7 +102,7 @@ class EquipoController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo equipo.');
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se ha creado un nuevo equipo.');
                 return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;

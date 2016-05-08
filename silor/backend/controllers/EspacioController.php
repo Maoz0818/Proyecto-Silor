@@ -53,7 +53,7 @@ class EspacioController extends Controller
         'verbs' => [
         'class' => VerbFilter::className(),
         'actions' => [
-        'delete' => ['post'],
+        'delete' => ['POST'],
         ],
         ],
         ];
@@ -69,6 +69,17 @@ class EspacioController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionSearch()
+    {
+        $searchModel = new EspacioSearch();
+        $dataProvider = $searchModel->searchParaReserva(Yii::$app->request->queryParams);
+
+        return $this->render('_search', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -102,7 +113,7 @@ class EspacioController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado un nuevo espacio.');
+                Yii::$app->session->setFlash('success', Icon::show('check').'Se ha creado un nuevo espacio.');
                 return $this->redirect(['index']);
             } else {
                 Yii::$app->response->format = Response::FORMAT_JSON;

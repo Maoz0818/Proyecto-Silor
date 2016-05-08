@@ -52,6 +52,6 @@ use kartik\icons\Icon;
         });
         ');
     ?>
-
+    
 </div>
 

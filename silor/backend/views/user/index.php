@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <?= Html::a( Icon::show('upload').'Cargar archivo de usuarios', '#', [
             'id' => 'activity-index-link',
-            'class' => 'btn btn-success',
+            'class' => 'btn btn-primary',
             'data-toggle' => 'modal',
             'data-target' => '#modal',
             'data-url' => Url::to(['upload']),
@@ -58,6 +58,10 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'password_reset_token',
             'email:email',
             //'role_id',
+            [
+                'attribute' => 'role_id',
+                'value' => 'role.role_name',
+            ],
             // 'status_id',
             // 'created_at',
             // 'updated_at',

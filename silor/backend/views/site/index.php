@@ -43,7 +43,7 @@ $this->title = 'Silor';
 
                     <?php
 
-                            echo Html::a(Icon::show('calendar', ['class' => 'fa-2x']).'Reservar Espacios', ['user/index'],['class' => 'btn btn-danger']);
+                            echo Html::a(Icon::show('calendar', ['class' => 'fa-2x']).'Reservar Espacios', ['event/index'],['class' => 'btn btn-danger']);
 
                     ?>
                 </p>

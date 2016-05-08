@@ -3,34 +3,22 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use backend\models\Espacio;
+use backend\models\search\EspacioSearch;
 use yii\widgets\Pjax;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\search\EspacioSearch */
 /* @var $form yii\widgets\ActiveForm */
+$searchModel = new EspacioSearch();
+$dataProvider = $searchModel->searchParaReserva(Yii::$app->request->queryParams);
 ?>
 
 <div class="espacio-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['search'],
-        'method' => 'get',
-    ]); ?>
 
-    <?= $form->field($searchModel, 'globalSearch') ?>
-
-    <?php // echo $form->field($model, 'tipo_espacio_id') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
-
-    <?php Pjax::begin(); ?>
-    
     <?= GridView::widget([
         'id' => 'espacio-grid',
         'dataProvider' => $dataProvider,

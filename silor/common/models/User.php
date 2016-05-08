@@ -81,12 +81,12 @@ class User extends ActiveRecord implements IdentityInterface
 
                 ['cedula', 'filter', 'filter' => 'trim'],
                 ['cedula', 'required'],
-                ['cedula', 'string', 'max' => 35],
+                ['cedula', 'integer'],
                 ['cedula', 'unique'],
 
                 ['telefono', 'filter', 'filter' => 'trim'],
                 ['telefono', 'required'],
-                ['telefono', 'string', 'max' => 32],
+                ['telefono', 'integer'],
 
                 ['email', 'filter', 'filter' => 'trim'],
                 ['email', 'required'],
@@ -228,6 +228,13 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
     }
+
+    // public function generatePassword()
+    // {
+    //     $password = 'univalle';
+    //     $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    //     $this->auth_key = Yii::$app->security->generateRandomString();
+    // }
 
     /**
     * Generates password hash from password and sets it to the model
