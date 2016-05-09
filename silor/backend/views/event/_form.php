@@ -31,9 +31,8 @@ use yii\web\view;
     </div>
 
     <?php $form = ActiveForm::begin([
-        'action' => ['create'],
         'method' => 'get',
-    ]); ?>
+    ]);?>
 
     <div class="row">
     <div class="col-sm-8">

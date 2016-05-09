@@ -30,24 +30,6 @@ $(document).on('click', "input[type='checkbox']", (function() {
         };  
 })); 
 
-// $(function(){
-//     $(document).on('click', '.fc-future', function(){
-//         var title = $(this).attr('data-date');
-//         $.get("/index.php/event/create", {title: title}, function(respuesta){
-//         $(".event-title").html(respuesta);
-//         });
-//     });
-// });
-
-
-// $(function(){
-//     $(document).on('click', '.fc-future', function(){
-//         var date = $(this).attr('data-date');
-//         window.location.replace('/index.php/event/create');
-//         //$('.btn-success').click();
-//     });
-// });
-
 $(document).on('click', '.fc-future', function(){
     var title = $(this).attr('data-date');
     $('#event-fecha').val(title);

@@ -5,21 +5,21 @@ namespace backend\models;
 use Yii;
 
 /**
- * This is the model class for table "motivo_cancelacion".
+ * This is the model class for table "motivo_estado".
  *
  * @property integer $motivo_id
  * @property string $descripcion
  *
- * @property Reserva[] $reservas
+ * @property Event[] $events
  */
-class MotivoCancelacion extends \yii\db\ActiveRecord
+class MotivoEstado extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'motivo_cancelacion';
+        return 'motivo_estado';
     }
 
     /**
@@ -47,8 +47,9 @@ class MotivoCancelacion extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getReservas()
+    public function getEvents()
     {
-        return $this->hasMany(Reserva::className(), ['motivo_cancelacion_id' => 'motivo_id']);
+        return $this->hasMany(Event::className(), ['motivo_cancelacion_id' => 'motivo_id']);
     }
+
 }

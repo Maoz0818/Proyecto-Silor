@@ -9,14 +9,14 @@ $this->title = Yii::t('app', 'Update {modelClass}: ', [
     'modelClass' => 'Event',
 ]) . $model->title;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Events'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id, 'description' => $model->description]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 ?>
 <div class="event-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
+    <?= $this->render('_formulario', [
         'model' => $model,
     ]) ?>
 

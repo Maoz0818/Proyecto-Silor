@@ -6,6 +6,8 @@ use Yii;
 use backend\models\Event;
 use backend\models\search\EspacioSearch;
 use backend\models\search\EventSearch;
+use backend\models\MotivoEstado;
+use backend\models\search\MotivoEstadoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -50,9 +52,20 @@ class EventController extends Controller
         ]);
     }
 
+    public function actionCalendario()
+    {
+        $searchModel = new EventSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('calendario', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
     public function actionJsoncalendar(){
 
-        $events = Event::find()->where(['estado_id'=>'2'])->asArray()->all();
+        $events = Event::find()->where(['estado_id'=>'1'])->asArray()->all();
 
         $tasks = [];
 
@@ -74,12 +87,13 @@ class EventController extends Controller
     /**
      * Displays a single Event model.
      * @param string $id
+     * @param string $description
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id, $description)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($id, $description),
         ]);
     }
 
@@ -101,7 +115,7 @@ class EventController extends Controller
             $item->event_id = $model->id; // no need for validation rule on user_id as you set it yourself
             $item->save(false); 
             Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado una nueva reserva.');
-            return $this->redirect(['index']);
+            return $this->redirect(['calendario']);
         } 
         else {
             return $this->render('create', [
@@ -117,14 +131,33 @@ class EventController extends Controller
      * Updates an existing Event model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param string $id
+     * @param string $description
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+    public function actionUpdate($id, $description)
+    {   
+        $model = $this->findModel($id, $description);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+
+            switch($model->estado_id){
+                case 1:
+                    Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva "'.$model->title.'" cambio a estado "Aprobada"');
+                    break;
+
+                case 2:
+                    Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Pendiente"');
+                    break;
+
+                case 3:
+                    Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Negada"');
+                    break;
+
+                case 4:
+                    Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Cancelada"');
+                    break;
+            }
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,

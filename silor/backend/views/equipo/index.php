@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-url' => Url::to(['update', 'id' => $model->id]),
                         'data-pjax' => '0',
                         ]);
-                },
+                    },
                 ],  
             ],
         ],
