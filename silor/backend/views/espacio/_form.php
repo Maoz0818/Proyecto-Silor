@@ -21,7 +21,7 @@ use kartik\icons\Icon;
 
     <?= $form->field($model, 'edificio_id')->dropDownList($model->edificioList,[ 'prompt' => 'Si el epacio pertenece a un edificio elige uno' ]);?>
 
-    <?= $form->field($model, 'tipo_espacio_id')->dropDownList($model->tipoEspacioList,[ 'prompt' => 'Por favor elige uno' ]);?>
+    <?= $form->field($model, 'nombre')->dropDownList($model->tipoEspacioList,[ 'prompt' => 'Por favor elige uno' ]);?>
 
     <?= $form->field($model, 'codigo')->textInput(['maxlength' => true]) ?>
 
@@ -34,27 +34,5 @@ use kartik\icons\Icon;
     </div>
 
     <?php ActiveForm::end(); ?>
-
-        <?php
-    $this->registerJs('
-    // obtener la id del formulario y establecer el manejador de eventos
-        $("form#espacio-form").on("beforeSubmit", function(e) {
-            var form = $(this);
-            $.post(
-            form.attr("action")+"&submit=true",
-            form.serialize()
-            )
-            .done(function(result) {
-                form.parent().html(result.message);
-                $.pjax.reload({container:"#espacio-grid"});
-            });
-            return false;
-        }).on("submit", function(e){
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return false;
-        });
-        ');
-    ?>
 
 </div>

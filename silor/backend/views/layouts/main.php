@@ -129,9 +129,11 @@ MomentjsAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left"><?=Html::img('@web/images/logoUnivalle.jpg')?> Universidad del Valle <?= date('Y') ?></p>
+        <div class="footer-logo">
+            <p class="pull-left"><?=Html::img('@web/images/logoUnivalle.jpg')?> Universidad del Valle <?= date('Y') ?></p>
 
-        <p class="pull-right"><br> &copy; Derechos reservados por el equipo de desarrollo "SILOR" </p>
+            <p class="pull-right"><br> &copy; Derechos reservados por el equipo de desarrollo "SILOR" </p>
+        </div>
     </div>
 </footer>
 

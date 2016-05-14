@@ -6,15 +6,15 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Event */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Events'), 'url' => ['index']];
+$this->title = "Solicitud ".$model->nombreEstado;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Solicitudes de reserva'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="event-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
+<!--     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id, 'description' => $model->description], ['class' => 'btn btn-primary']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id, 'description' => $model->description], [
             'class' => 'btn btn-danger',
@@ -23,19 +23,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-    </p>
+    </p> -->
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
+            'nombreUser',
             'title',
             'description',
             'start_date',
             'end_date',
-            'user_id',
-            'estado_id',
-            'motivo_estado_id',
+            'nombreEspacio',
+            'codigoEspacio',
+            'nombreEstado',
         ],
     ]) ?>
 

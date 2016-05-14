@@ -12,6 +12,7 @@ use common\models\PermissionHelpers;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use kartik\icons\Icon;
+use \yii\db\IntegrityException;
 
 /**
  * EquipoController implements the CRUD actions for Equipo model.
@@ -153,8 +154,13 @@ class EquipoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', Icon::show('check').'Equipo eliminado.');
+        $model= $this->findModel($id);
+        try {
+             $model->delete();
+             Yii::$app->session->setFlash('success', Icon::show('check').'Equipo eliminado.');
+        } catch(IntegrityException $e) {
+            Yii::$app->session->setFlash('error', 'No es posible eliminar el equipo porque ha sido reservado en una o varias ocaciones.');
+        }
         return $this->redirect(['index']);
     }
 

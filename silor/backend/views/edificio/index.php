@@ -57,18 +57,28 @@ $this->params['breadcrumbs'][] = $this->title;
                                 && PermissionHelpers::requireStatus('Activo')),
                 ], 
 
-                'template' => '{view}{update}{delete}',
+                'template' => '{view} {update}',
+                'header' => 'Opciones',
                 'buttons' => [
                 'update' => function ($url, $model, $key) {
-                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '#', [
+                    return Html::a(Icon::show('pencil'), '#', [
                         'id' => 'activity-index-link',
-                        'title' => Yii::t('app', 'Actualizar'),
+                        'title' => Yii::t('app', 'Actualizar edificio'),
+                        'class'=>'btn btn-primary btn-xs',
                         'data-toggle' => 'modal',
                         'data-target' => '#modal',
                         'data-url' => Url::to(['update', 'id' => $model->id]),
                         'data-pjax' => '0',
                         ]);
                 },
+
+                'view' => function ($url, $model){
+                            return Html::a(Icon::show('eye'), $url, [
+                                'title' => Yii::t('app', 'Ver edificio'),
+                                'class'=>'btn btn-primary btn-xs',
+                                ]);
+                        },
+
                 ],  
             ],
         ],
@@ -77,13 +87,15 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
 
     <?php
-    Modal::begin([
-        'id' => 'modal',
-        ]);
+        Modal::begin([
+            'id' => 'modal',
+            'size' => 'modal-lg',
+            'header' => '<h3>Gestión de edificios</h3>',
+            ]);
 
-    echo "<div></div>";
+        echo "<div></div>";
 
-    Modal::end();
+        Modal::end();
     ?>
 
 </div>

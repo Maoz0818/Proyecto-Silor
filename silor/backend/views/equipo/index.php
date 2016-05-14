@@ -63,18 +63,27 @@ $this->params['breadcrumbs'][] = $this->title;
                                 && PermissionHelpers::requireStatus('Activo')),
                 ], 
 
-                'template' => '{view}{update}{delete}',
+                'template' => '{view} {update}',
+                'header' => 'Opciones',
                 'buttons' => [
                 'update' => function ($url, $model, $key) {
-                    return Html::a('<span class="glyphicon glyphicon-pencil"></span>', '#', [
+                    return Html::a(Icon::show('pencil'), '#', [
                         'id' => 'activity-index-link',
-                        'title' => Yii::t('app', 'Actualizar'),
+                        'title' => Yii::t('app', 'Actualizar equipo'),
+                        'class'=>'btn btn-primary btn-xs',
                         'data-toggle' => 'modal',
                         'data-target' => '#modal',
                         'data-url' => Url::to(['update', 'id' => $model->id]),
                         'data-pjax' => '0',
                         ]);
                     },
+
+                'view' => function ($url, $model){
+                            return Html::a(Icon::show('eye'), $url, [
+                                'title' => Yii::t('app', 'Ver equipo'),
+                                'class'=>'btn btn-primary btn-xs',
+                                ]);
+                        },
                 ],  
             ],
         ],
@@ -85,6 +94,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         Modal::begin([
             'id' => 'modal',
+            'size' => 'modal-lg',
+            'header' => '<h3>Gestión de equipos</h3>',
             ]);
 
         echo "<div></div>";

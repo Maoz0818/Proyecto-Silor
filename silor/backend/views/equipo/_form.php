@@ -30,28 +30,6 @@ use kartik\icons\Icon;
     </div>
 
     <?php ActiveForm::end(); ?>
-
-    <?php
-    $this->registerJs('
-    // obtener la id del formulario y establecer el manejador de eventos
-        $("form#equipo-form").on("beforeSubmit", function(e) {
-            var form = $(this);
-            $.post(
-            form.attr("action")+"&submit=true",
-            form.serialize()
-            )
-            .done(function(result) {
-                form.parent().html(result.message);
-                $.pjax.reload({container:"#equipo-grid"});
-            });
-            return false;
-        }).on("submit", function(e){
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return false;
-        });
-        ');
-    ?>
     
 </div>
 

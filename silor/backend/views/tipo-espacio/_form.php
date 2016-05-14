@@ -27,26 +27,4 @@ use kartik\icons\Icon;
 
     <?php ActiveForm::end(); ?>
 
-        <?php
-    $this->registerJs('
-    // obtener la id del formulario y establecer el manejador de eventos
-        $("form#tipo-espacio-form").on("beforeSubmit", function(e) {
-            var form = $(this);
-            $.post(
-            form.attr("action")+"&submit=true",
-            form.serialize()
-            )
-            .done(function(result) {
-                form.parent().html(result.message);
-                $.pjax.reload({container:"#tipo-espacio-grid"});
-            });
-            return false;
-        }).on("submit", function(e){
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return false;
-        });
-        ');
-    ?>
-
 </div>

@@ -21,8 +21,8 @@ class EventSearch extends Event
     public function rules()
     {
         return [
-            [['id','motivo_estado_id'], 'integer'],
-            [['title', 'description', 'start_date', 'end_date', 'estado_id', 'user_id'], 'safe'],
+            [['id'], 'integer'],
+            [['title', 'description', 'start_date', 'end_date', 'estado_id', 'user_id', 'espacio_id'], 'safe'],
         ];
     }
 
@@ -50,6 +50,9 @@ class EventSearch extends Event
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 100,
+            ],
         ]);
 
         $this->load($params);
@@ -60,13 +63,13 @@ class EventSearch extends Event
             return $dataProvider;
         }
 
-        $query->joinWith('estado');
         $query->joinWith('user');
+        $query->joinWith('estado');
+        $query->joinWith('espacio');
 
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'motivo_estado_id' => $this->motivo_estado_id,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
@@ -74,7 +77,8 @@ class EventSearch extends Event
             ->andFilterWhere(['like', 'start_date', $this->start_date])
             ->andFilterWhere(['like', 'end_date', $this->end_date])
             ->andFilterWhere(['like', 'estado.nombre', $this->estado_id])
-            ->andFilterWhere(['like', 'user.nombre_completo', $this->user_id]);
+            ->andFilterWhere(['like', 'espacio.nombre', $this->espacio_id])
+            ->andFilterWhere(['like', 'user.nombre_completo', $this->user_id]);            
 
         return $dataProvider;
     }

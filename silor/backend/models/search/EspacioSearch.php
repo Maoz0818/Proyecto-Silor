@@ -21,7 +21,7 @@ class EspacioSearch extends Espacio
     {
         return [
             [['espacio_id', 'capacidad'], 'integer'],
-            [['codigo', 'ubicacion', 'tipo_espacio_id', 'edificio_id', 'globalSearch'], 'safe'],
+            [['codigo', 'ubicacion', 'edificio_id', 'globalSearch', 'nombre'], 'safe'],
         ];
     }
 
@@ -69,7 +69,6 @@ class EspacioSearch extends Espacio
             return $dataProvider;
         }
 
-        $query->joinWith('tipoEspacio');
         $query->joinWith('edificio');
 
         // grid filtering conditions
@@ -81,7 +80,7 @@ class EspacioSearch extends Espacio
         $query->andFilterWhere(['like', 'codigo', $this->codigo])
             ->andFilterWhere(['like', 'ubicacion', $this->ubicacion])
             ->andFilterWhere(['like', 'edificio.nombre_edificio', $this->edificio_id])
-            ->andFilterWhere(['like', 'tipo_espacio.nombre_tipo', $this->tipo_espacio_id]);
+            ->andFilterWhere(['like', 'nombre', $this->nombre]);
 
         return $dataProvider;
     }
@@ -95,7 +94,7 @@ class EspacioSearch extends Espacio
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 4,
+                'pageSize' => 5,
             ],
         ]);
 
@@ -104,14 +103,13 @@ class EspacioSearch extends Espacio
         if (!$this->validate()) {
             return $dataProvider;
         }
-
-        $query->joinWith('tipoEspacio');
+        
         $query->joinWith('edificio');
 
         $query->orFilterWhere(['like', 'codigo', $this->globalSearch])
             ->orFilterWhere(['like', 'edificio.nombre_edificio', $this->globalSearch])
             ->orFilterWhere(['like', 'capacidad', $this->globalSearch])
-            ->orFilterWhere(['like', 'tipo_espacio.nombre_tipo', $this->globalSearch]);
+            ->orFilterWhere(['like', 'nombre', $this->globalSearch]);
 
         return $dataProvider;
     }

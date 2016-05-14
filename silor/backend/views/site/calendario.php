@@ -14,27 +14,12 @@ use yii\widgets\ActiveForm;
 
 $this->title = Yii::t('app', 'Calendario');
 $this->params['breadcrumbs'][] = $this->title;
-$model = new Event();
 ?>
 <div class="event-calendario">
 
     <h1><?= Html::encode($this->title) ?></h1>
- 
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'evento',
-        ]); ?>
-        
-        <?= Html::a( Icon::show('plus').'Nueva reserva', ['create','fecha' => trim($model->fecha)], ['class' => 'btn btn-success','data' => [
-                'method' => 'post',
-                ]
-        ]) ?>
-
-        <?= $form->field($model, 'fecha')->textInput(['maxlength' => true]) ?>
-
-    <?php ActiveForm::end(); ?>
-
-<?php Pjax::begin(); ?>
+    <?php Pjax::begin(); ?>
 
 <!--     <div id='calendar'></div> -->
 
@@ -42,6 +27,10 @@ $model = new Event();
 
         'options' => [
             'id' => 'event-grid',
+            'lang' => 'es',
+            'timeZone' => 'local',
+
+
         ],
 
         'ajaxEvents' => Url::to(['/event/jsoncalendar']),
@@ -62,12 +51,12 @@ $model = new Event();
                     'month' => ['Mes'],
                     'week' => ['Semana'],
             ],
+            'timeFormat' => '(hh:mm)t',
         ],
 
     ));
     ?>
-
-
+    
 <?php Pjax::end(); ?>
 
 </div>

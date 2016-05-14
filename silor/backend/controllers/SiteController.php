@@ -71,6 +71,11 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    public function actionCalendario()
+    {
+        return $this->render('calendario');
+    }
+
     public function actionLogin()
     {
         if (!\Yii::$app->user->isGuest) {

@@ -5,6 +5,8 @@ namespace backend\models;
 use Yii;
 use common\models\User;
 use backend\models\Estado;
+use backend\models\Espacio;
+use backend\models\TipoEspacio;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -17,13 +19,13 @@ use yii\helpers\ArrayHelper;
  * @property string $end_date
  * @property integer $user_id
  * @property integer $estado_id
- * @property integer $motivo_estado_id
- *
+ * @property integer $espacio_id
+
+ * @property Espacio $espacio
  * @property Estado $estado
  * @property MotivoEstado $motivoEstado
  * @property User $user
  * @property ItemEquipo[] $itemEquipos
- * @property ItemEspacio[] $itemEspacios
  */
 class Event extends \yii\db\ActiveRecord
 {
@@ -44,12 +46,12 @@ class Event extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'description', 'start_date', 'end_date', 'fecha', 'horaInicio', 'horaFin', 'estado_id'], 'required'],
-            [['user_id', 'estado_id', 'motivo_estado_id'], 'integer'],
+            [['title', 'description', 'start_date', 'end_date', 'fecha', 'horaInicio', 'horaFin', 'espacio_id'], 'required'],
+            [['user_id', 'estado_id', 'espacio_id'], 'integer'],
             [['title', 'description', 'fecha' , 'horaInicio', 'horaFin'], 'string', 'max' => 255],
             [['start_date', 'end_date'], 'string', 'max' => 48],
+            [['espacio_id'], 'exist', 'skipOnError' => true, 'targetClass' => Espacio::className(), 'targetAttribute' => ['espacio_id' => 'espacio_id']],
             [['estado_id'], 'exist', 'skipOnError' => true, 'targetClass' => Estado::className(), 'targetAttribute' => ['estado_id' => 'estado_id']],
-            [['motivo_estado_id'], 'exist', 'skipOnError' => true, 'targetClass' => MotivoEstado::className(), 'targetAttribute' => ['motivo_estado_id' => 'motivo_id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             ['user_id', 'default', 'value' => Yii::$app->user->identity->id],
         ];
@@ -61,17 +63,21 @@ class Event extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app', 'Consecutivo'),
-            'title' => Yii::t('app', 'Motivo solicitud'),
-            'description' => Yii::t('app', 'Descripcion'),
-            'start_date' => Yii::t('app', 'Fecha y hora inicio'),
+            'id' => Yii::t('app', 'No. de reserva'),
+            'title' => Yii::t('app', 'Motivo de solicitud'),
+            'description' => Yii::t('app', 'Descripción'),
+            'start_date' => Yii::t('app', 'Fecha y hora de inicio'),
             'end_date' => Yii::t('app', 'Fecha y hora final'),
             'user_id' => Yii::t('app', 'Nombre del solicitante'),
             'estado_id' => Yii::t('app', 'Estado de solicitud'),
-            'motivo_estado_id' => Yii::t('app', 'Motivo de cancelacion'),
+            'espacio_id' => Yii::t('app', 'Espacio solicitado'),
             'fecha' => Yii::t('app', 'Fecha seleccionada'),
             'horaInicio' => Yii::t('app', 'Hora de inicio'),
             'horaFin' => Yii::t('app', 'Hora de finalización'),
+            'nombreUser' => Yii::t('app', 'Solicitante'),
+            'nombreEstado' => Yii::t('app', 'Estado de solicitud'),
+            'nombreEspacio' => Yii::t('app', 'Espacio solicitado'),
+            'codigoEspacio' => Yii::t('app', 'Codigo'),
         ];
     }
 
@@ -83,12 +89,28 @@ class Event extends \yii\db\ActiveRecord
         return $this->hasOne(Estado::className(), ['estado_id' => 'estado_id']);
     }
 
+
+    public function getNombreEstado()
+    {
+        return $this->estado ? $this->estado->nombre : '- sin estado -';
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getMotivoEstado()
+    public function getEspacio()
     {
-        return $this->hasOne(MotivoEstado::className(), ['motivo_id' => 'motivo_estado_id']);
+        return $this->hasOne(Espacio::className(), ['espacio_id' => 'espacio_id']);
+    }
+
+    public function getNombreEspacio()
+    {
+        return $this->espacio ? $this->espacio->nombre : '- sin nombre -';
+    }
+
+    public function getCodigoEspacio()
+    {
+        return $this->espacio ? $this->espacio->codigo : '- sin codigo -';
     }
 
     /**
@@ -97,6 +119,11 @@ class Event extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function getNombreUser()
+    {
+        return $this->user ? $this->user->nombre_completo : '- sin nombre -';
     }
 
     /**
@@ -108,15 +135,7 @@ class Event extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getItemEspacios()
-    {
-        return $this->hasMany(ItemEspacio::className(), ['event_id' => 'id']);
-    }
-
-        /**
-    * get list of motovo_estado for dropdown
+    * get list of estado for dropdown
     */
     public static function getEstadoList()
     {

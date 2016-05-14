@@ -6,17 +6,18 @@ use Yii;
 use backend\models\Event;
 use backend\models\search\EspacioSearch;
 use backend\models\search\EventSearch;
-use backend\models\MotivoEstado;
-use backend\models\search\MotivoEstadoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use common\models\PermissionHelpers;
 use yii\filters\VerbFilter;
 use kartik\icons\Icon;
-use backend\models\ItemEspacio;
+use backend\models\Espacio;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
+use yii\web\Response;
+use kartik\mpdf\Pdf;
 /**
  * EventController implements the CRUD actions for Event model.
  */
@@ -28,12 +29,37 @@ class EventController extends Controller
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
+        'access' => [
+        'class' => \yii\filters\AccessControl::className(),
+        'only' => ['index', 'view','create', 'update', 'delete', 'calendario'],
+        'rules' => [
+        [
+        'actions' => ['index', 'view', 'create', 'update', 'delete', 'calendario'],
+        'allow' => true,
+        'roles' => ['@'],
+        'matchCallback' => function ($rule, $action) {
+
+            return PermissionHelpers::requireMinimumRole('Administrador')
+            && PermissionHelpers::requireStatus('Activo');
+        }
+        ],
+        [
+        'actions' => [ 'index', 'view', 'create', 'update', 'delete'],
+        'allow' => true,
+        'roles' => ['@'],
+        'matchCallback' => function ($rule, $action) {
+            return PermissionHelpers::requireMinimumRole('SuperUsuario')
+            && PermissionHelpers::requireStatus('Activo');
+        }
+        ],
+        ],
+        ],
+        'verbs' => [
+        'class' => VerbFilter::className(),
+        'actions' => [
+        'delete' => ['POST'],
+        ],
+        ],
         ];
     }
 
@@ -52,20 +78,10 @@ class EventController extends Controller
         ]);
     }
 
-    public function actionCalendario()
-    {
-        $searchModel = new EventSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('calendario', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
 
     public function actionJsoncalendar(){
 
-        $events = Event::find()->where(['estado_id'=>'1'])->asArray()->all();
+        $events = Event::find()->where(['estado_id'=>'2'])->asArray()->all();
 
         $tasks = [];
 
@@ -97,30 +113,45 @@ class EventController extends Controller
         ]);
     }
 
+
+    public function actionDisponibilidad($id)
+    {
+        $events = Event::find()->where(['espacio_id'=>$id])->andWhere(['estado_id'=>1])->all();
+
+        $tasks = [];
+
+        foreach ($events as $eve) {
+            $event = new \yii2fullcalendar\models\Event();
+            $event->id = $eve->id;
+            $event->title = $eve->title;
+            $event->start = $eve->start_date;
+            $event->end = $eve->end_date;
+            $event->color = 'rgba(235,30,0,1)';
+            $tasks[] = $event;
+        }
+
+        return $this->renderAjax('_calendar', [
+            'events' => $tasks,
+        ]);
+    }
+
     /**
      * Creates a new Event model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($fecha)
+    public function actionCreate()
     {
         $model = new Event();
-        $model->fecha = $fecha;
-        $item = new ItemEspacio();
         $searchModel = new EspacioSearch();
         $dataProvider = $searchModel->searchParaReserva(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $item->load(Yii::$app->request->post()) && Model::validateMultiple([$model, $item])) {
-            $model->save(false); // skip validation as model is already validated
-            $item->event_id = $model->id; // no need for validation rule on user_id as you set it yourself
-            $item->save(false); 
+       if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', Icon::show('check').'Se a creado una nueva reserva.');
-            return $this->redirect(['calendario']);
-        } 
-        else {
+            return $this->redirect(['index']);
+        }else {
             return $this->render('create', [
                 'model' => $model,
-                'item' => $item,
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
@@ -134,35 +165,44 @@ class EventController extends Controller
      * @param string $description
      * @return mixed
      */
-    public function actionUpdate($id, $description)
+    public function actionUpdate($id, $description, $submit = false)
     {   
         $model = $this->findModel($id, $description);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save(false)) {
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit == false) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
+        }
 
-            switch($model->estado_id){
-                case 1:
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save(false)) {
+                switch($model->estado_id){
+                    case 1:
                     Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva "'.$model->title.'" cambio a estado "Aprobada"');
                     break;
 
-                case 2:
+                    case 2:
                     Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Pendiente"');
                     break;
 
-                case 3:
+                    case 3:
                     Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Negada"');
                     break;
 
-                case 4:
+                    case 4:
                     Yii::$app->session->setFlash('success', Icon::show('check').'La solicitud de reserva '.$model->title.' cambio a estado "Cancelada"');
                     break;
+                    }
+                return $this->redirect(['index']);
+            } else {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($model);
             }
-            return $this->redirect(['index']);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
         }
+
+        return $this->renderAjax('update', [
+            'model' => $model,
+            ]);
     }
 
     /**
@@ -185,12 +225,13 @@ class EventController extends Controller
      * @return Event the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id, $description)
     {
-        if (($model = Event::findOne($id)) !== null) {
+        if (($model = Event::findOne(['id' => $id, 'description' => $description])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+ 
 }

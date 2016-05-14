@@ -8,7 +8,7 @@ use kartik\icons\Icon;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Espacio */
 
-$this->title = $model->nombreTipoEspacio." ".$model->codigo;
+$this->title = $model->nombre." ".$model->codigo;
 
 $show_this_nav = PermissionHelpers::requireMinimumRole('Administrador');
 
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             //'espacio_id',
-            'nombreTipoEspacio',
+            'nombre',
             'codigo',
             'capacidad',
             'ubicacion',

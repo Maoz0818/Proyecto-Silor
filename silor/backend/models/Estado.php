@@ -29,7 +29,7 @@ class Estado extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'required'],
-            [['nombre'], 'string', 'max' => 48],
+            [['nombre', 'descripcion'], 'string', 'max' => 48],
         ];
     }
 
@@ -39,8 +39,9 @@ class Estado extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'estado_id' => Yii::t('app', 'Estado ID'),
+            'estado_id' => Yii::t('app', 'Identificador'),
             'nombre' => Yii::t('app', 'Nombre'),
+            'descripcion' => Yii::t('app', 'Descripción'),
         ];
     }
 

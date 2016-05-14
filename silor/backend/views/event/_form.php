@@ -1,77 +1,48 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
+use common\models\PermissionHelpers;
+use yii\helpers\Url;
 use kartik\icons\Icon;
+use backend\models\Espacio;
+use backend\models\EspacioSearch;
+use yii\widgets\ActiveForm;
 use kartik\time\TimePicker;
 use kartik\date\DatePicker;
-use yii\grid\GridView;
-use yii\widgets\Pjax;
-use yii\helpers\Url;
-use backend\models\Espacio;
-use backend\models\search\EspacioSearch;
-use yii\data\ActiveDataProvider;
-use backend\models\ItemEspacio;
-use yii\web\view;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\Event */
-/* @var $form yii\widgets\ActiveForm */
+/* @var $searchModel backend\models\search\EventSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
 ?>
+<div class="event-calendario">
 
-<div class="event-form">
+<div class="form-group">
 
-    <hr/>
-    
-    <div class="form-group">
+<hr/>
 
-        <h3>Primero selecciona un espacio</h3>
+    <h4>Selecciona un espacio, recuerda que tienes la opción de ver la disponibilidad de cada espacio</h4>
 
-    </div>
+<hr/>
 
-    <?php $form = ActiveForm::begin([
-        'method' => 'get',
-    ]);?>
+    <?php Pjax::begin(); ?> 
 
-    <div class="row">
-    <div class="col-sm-8">
-                                                                                                                                                                     
-    <div class="form-group">
-     <div class="input-group">
-        <?= $form->field($searchModel, 'globalSearch', ['options' => ['class' => 'input-group-btn', 'id' => 'input-reset']])->label(false) ?>
-        <span class="input-group-btn">
-        <?= Html::submitButton(Icon::show('search').'Buscar', ['class' => 'btn btn-primary']) ?>
-        </span>
-     </div>
-    </div>
+    <?= $this->render('_espacios', ['model' => $searchModel]); ?>
 
-    </div>
-    </div>
-    
-    <?php  echo $this->render('_espacios', ['model' => $searchModel]); ?>
-
-    <p id="mensaje-espacios"></p>
-
-    <?php ActiveForm::end(); ?>
+    <?php Pjax::end(); ?>
+   
+</div>
 
     <?php $form = ActiveForm::begin(); ?>
-    
-    <div class="row" id="espacio-seleccionado">
-    <div class="col-sm-4">
 
-    <?= $form->field($item, 'espacio_id')->textInput(['readonly' => true]) ?>
-    
-    </div>
-    </div>
+    <hr/>
+
+        <h4>Ingresa los siguientes datos para terminar tu solicitud</h4>
 
     <hr/>
     
-    <div class="form-group">
-
-        <h3>Ahora ingresa los siguientes datos para terminar</h3>
-
-    </div>
 
     <div class="row">
 
@@ -105,6 +76,7 @@ use yii\web\view;
         'minuteStep' => 30,
         'showMeridian' => false,
         'defaultTime' => false,
+        'timeFormat' => 'Th:m:s\Z',
     ],
     'addonOptions' => [
         'asButton' => true
@@ -137,6 +109,8 @@ use yii\web\view;
 
     <div class="form-group" id="horario">
 
+    <?= $form->field($model, 'espacio_id')->textInput(['readonly' => true]) ?>
+
     <?= $form->field($model, 'start_date')->textInput(['maxlength' => true, 'readonly' => true]) ?>
 
     <?= $form->field($model, 'end_date')->textInput(['maxlength' => true, 'readonly' => true]) ?>
@@ -147,12 +121,23 @@ use yii\web\view;
 
     <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
-    <hr/>
-
     <div class="form-group">
-    <?= Html::submitButton($model->isNewRecord ? Icon::show('floppy-o').'Guardar' : Icon::show('pencil').'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'guardar-reserva']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Icon::show('floppy-o').'Guardar Solicitud' : Icon::show('pencil').'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'guardar-reserva']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
+
+    <?php
+
+        Modal::begin([
+            'id' => 'modal',
+            'size' => 'modal-lg',
+            'header' => '<h3>Disponibilidad</h3>',
+            ]);
+
+        echo "<div></div>";
+
+        Modal::end();
+    ?>
 
 </div>

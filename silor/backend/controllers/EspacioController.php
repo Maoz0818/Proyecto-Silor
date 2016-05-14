@@ -12,6 +12,7 @@ use common\models\PermissionHelpers;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use kartik\icons\Icon;
+use \yii\db\IntegrityException;
 
 /**
  * EspacioController implements the CRUD actions for Espacio model.
@@ -164,8 +165,13 @@ class EspacioController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', Icon::show('check').'Usuario eliminado.');
+        $model= $this->findModel($id);
+        try {
+             $model->delete();
+             Yii::$app->session->setFlash('success', Icon::show('check').'Espacio eliminado.');
+        } catch(IntegrityException $e) {
+            Yii::$app->session->setFlash('error', 'No es posible eliminar el espacio porque ha sido reservado en una o varias ocaciones.');
+        }
         return $this->redirect(['index']);
     }
 

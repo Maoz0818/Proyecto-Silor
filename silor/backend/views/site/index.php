@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use common\models\ValueHelpers;
 use kartik\icons\Icon;
+use yii\bootstrap\Carousel;
 
 /**
 * @var yii\web\View $this
@@ -28,6 +29,23 @@ $this->title = 'Silor';
 
     <div class="body-content">
 
+    <?php echo Carousel::widget([
+    'items' => [
+        // the item contains only the image
+        '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
+        // equivalent to the above
+        ['content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-02.jpg"/>'],
+        // the item contains both the image and the caption
+        [
+            'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-03.jpg"/>',
+            'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
+            'options' => [],
+        ],
+    ]
+]);
+
+?>
+
         <div class="row">
 
             <div class="col-lg-6">
@@ -43,7 +61,7 @@ $this->title = 'Silor';
 
                     <?php
 
-                            echo Html::a(Icon::show('calendar', ['class' => 'fa-2x']).'Reservar Espacios', ['event/index'],['class' => 'btn btn-danger']);
+                            echo Html::a(Icon::show('calendar', ['class' => 'fa-2x']).'Reservar Espacios', ['event/calendario'],['class' => 'btn btn-danger']);
 
                     ?>
                 </p>
